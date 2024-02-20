@@ -9,21 +9,23 @@ const uploadFile = async (req, res) => {
     const results = XLSX.utils.sheet_to_json(worksheet);
 
     for (const data of results) {
-        console.log(data);
+      // Convertir la hora de decimal a formato HH:MM
+      const horas = Math.floor(data.hora * 24);
+      const minutos = Math.floor((data.hora * 24 * 60) % 60);
+      const horaFormateada = `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}`;
+      
+      // Convertir la fecha al formato adecuado (puedes ajustar esto según el formato de fecha en tu Excel)
+      const fecha = XLSX.SSF.parse_date_code(data.fecha);
 
-        // Convertir la hora de decimal a formato HH:MM
-        const horas = Math.floor(data.hora * 24);
-        const minutos = Math.floor((data.hora * 24 * 60) % 60);
-        const horaFormateada = `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}`;
-  
-        const formattedData = {
-          nombre: data.nombre,
-          velacion: data.velacion,
-          exequias: data.exequias,
-          hora: horaFormateada,
-          destino_final: data.destino_final,
-          fecha: new Date(data.fecha)
-        };
+
+      const formattedData = {
+        nombre: data.nombre,
+        velacion: data.velacion,
+        exequias: data.exequias,
+        hora: horaFormateada,
+        destino_final: data.destino_final,
+        fecha: fecha
+      };
 
       try {
         const nuevoObituario = new Obituarios(formattedData);
@@ -44,6 +46,8 @@ const uploadFile = async (req, res) => {
     } else {
       res.status(500).json({ error: 'Error en el servidor al procesar el archivo' });
     }
-  }};
+  }
+};
+
 
 export default uploadFile;
