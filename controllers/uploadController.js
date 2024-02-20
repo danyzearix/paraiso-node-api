@@ -14,9 +14,8 @@ const uploadFile = async (req, res) => {
       const minutos = Math.floor((data.hora * 24 * 60) % 60);
       const horaFormateada = `${horas.toString().padStart(2, '0')}:${minutos.toString().padStart(2, '0')}`;
       
-      // Convertir la fecha al formato adecuado (puedes ajustar esto según el formato de fecha en tu Excel)
-      const fecha = XLSX.SSF.parse_date_code(data.fecha);
-
+      // Formatear la fecha al formato ISO 8601
+      const fecha = new Date(data.fecha).toISOString();
 
       const formattedData = {
         nombre: data.nombre,
@@ -48,6 +47,5 @@ const uploadFile = async (req, res) => {
     }
   }
 };
-
 
 export default uploadFile;
